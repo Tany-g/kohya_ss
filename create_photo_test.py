@@ -10,9 +10,9 @@ if __name__ == '__main__':
 
     main_photo = Image.open('lllll/TfwVAbyX_400x400.jpg')
 
-    style_photo1 = Image.open("lllll/00012-0-1P616194618-4.png")
+    style_photo1 = Image.open("lllll/style_1.jpeg")
 
-    style_photo2 = Image.open("lllll/TfwVAbyX_400x400.jpg")
+    style_photo2 = Image.open("lllll/style_2.jpg")
 
     background_image1 = Image.open("lllll/00012-0-1P616194618-4.png")
     background_image2 = Image.open("lllll/00012-0-1P616194618-4.png")
