@@ -41,7 +41,8 @@ class CreatePhoto:
         options = {}
         options['sd_model_checkpoint'] = 'epicrealism_pureEvolutionV3.safetensors'
         res = self.api.set_options(options)
-
+        if res is not None:
+            print("connect stable_diffusion failed")
     # create_list = [
     #     {'style_photo': path_to_style_photo1, "background_image": background_image, 'promote': 'style1',
     #      'quantity': 5},
@@ -60,25 +61,7 @@ class CreatePhoto:
 
         TargetPhotoList = []
         BackGroundList = []
-        controlnets = []
 
-        controlnet = ControlNetUnit(input_image=main_photo,
-                                    module=self.con_module,
-                                    model=self.Controlnet,
-                                    weight=1.0,
-                                    resize_mode="Resize and Fill",
-                                    lowvram=False,
-                                    processor_res=512,
-                                    threshold_a=64,
-                                    threshold_b=64,
-                                    guidance=1.0,
-                                    guidance_start=self.guidance_start,
-                                    guidance_end=self.guidance_end,
-                                    control_mode=0,
-                                    pixel_perfect=True,
-                                    guessmode=None,  # deprecated: use control_mode
-                                    )
-        controlnets.append(controlnet)
         for style in create_list:
             BackGroundList.append(style["background_image"])
             pic_count = style["quantity"]
@@ -88,6 +71,25 @@ class CreatePhoto:
             print(negative_prompt)
             print(prompt)
             generate_photos_list = []
+
+            controlnets = []
+            controlnet = ControlNetUnit(input_image=style["style_photo"],
+                                        module=self.con_module,
+                                        model=self.Controlnet,
+                                        weight=1.0,
+                                        resize_mode="Resize and Fill",
+                                        lowvram=False,
+                                        processor_res=512,
+                                        threshold_a=64,
+                                        threshold_b=64,
+                                        guidance=1.0,
+                                        guidance_start=self.guidance_start,
+                                        guidance_end=self.guidance_end,
+                                        control_mode=0,
+                                        pixel_perfect=True,
+                                        guessmode=None,  # deprecated: use control_mode
+                                        )
+            controlnets.append(controlnet)
 
             for i in range(pic_count):
                 result = self.api.txt2img(
@@ -190,6 +192,7 @@ class CreatePhoto:
                 data = fp.read()
                 remote_lora_md5 = hashlib.md5(data).hexdigest()
         except:
+            print("cant open file")
             return -1
 
         self.__refresh_loras__()
